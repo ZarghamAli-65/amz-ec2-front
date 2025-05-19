@@ -19,6 +19,11 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Set environment variables
+        run: |
+          echo "NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ secrets.NEXT_PUBLIC_COGNITO_USER_POOL_ID }}" >> $GITHUB_ENV
+          echo "NEXT_PUBLIC_COGNITO_CLIENT_ID=${{ secrets.NEXT_PUBLIC_COGNITO_CLIENT_ID }}" >> $GITHUB_ENV
+
       - name: Install dependencies and build
         run: |
           npm install
