@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       - name: Checkout code
@@ -38,4 +39,4 @@ jobs:
           cd aws-cdk-ec2
           npm install
           npm install aws-cdk-lib constructs
-          cdk deploy --require-approval never
+          npx cdk deploy --require-approval never
