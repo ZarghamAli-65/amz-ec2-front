@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies and build
         run: |
@@ -35,6 +35,7 @@ jobs:
 
       - name: Deploy with CDK
         run: |
-          cd cdk # If your CDK app is in a subfolder, adjust accordingly
+          cd aws-cdk-ec2
           npm install
+          npm install aws-cdk-lib constructs
           cdk deploy --require-approval never
