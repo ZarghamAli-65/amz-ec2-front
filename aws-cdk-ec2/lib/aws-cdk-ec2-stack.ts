@@ -26,6 +26,16 @@ export class MyNextjsCdkStack extends cdk.Stack {
       ],
     });
 
+    // IAM user
+    const user = new iam.User(this, 'GitHubCICDUser', {
+      userName: 'github-actions-user',
+    });
+
+    user.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess')
+    );
+
+
 
 
     // Create Security Group
