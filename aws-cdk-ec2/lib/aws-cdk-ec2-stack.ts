@@ -26,6 +26,8 @@ export class MyNextjsCdkStack extends cdk.Stack {
       ],
     });
 
+
+
     // Create Security Group
     const sg = new ec2.SecurityGroup(this, 'WebSG', {
       vpc,
@@ -46,6 +48,30 @@ export class MyNextjsCdkStack extends cdk.Stack {
       role: role,
       keyName: keyPair.keyName!, // use the keyName created above
     });
+
+    // Allocate an Elastic IP
+    const eip = new ec2.CfnEIP(this, 'NextjsElasticIP', {
+      domain: 'vpc', // must be 'vpc' for instances in a VPC
+    });
+
+    // Associate the EIP with the EC2 instance
+    new ec2.CfnEIPAssociation(this, 'EIPAssociation', {
+      instanceId: this.instance.instanceId,
+      eip: eip.ref,
+    });
+
+    // Output Elastic IP
+    new cdk.CfnOutput(this, 'ElasticIP', {
+      value: eip.ref,
+      description: 'Static Elastic IP of the EC2 instance',
+    });
+
+
+    //public ip
+    new cdk.CfnOutput(this, 'InstancePublicIP', {
+      value: this.instance.instancePublicIp,
+    });
+
 
     // Optional: Add dependency to ensure key is created before instance
     this.instance.node.addDependency(keyPair);

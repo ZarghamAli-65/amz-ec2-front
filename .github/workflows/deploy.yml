@@ -48,3 +48,28 @@ jobs:
           npm install
           npm install aws-cdk-lib constructs
           npx cdk deploy --require-approval never
+
+      - name: Upload build files to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ec2-user
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: ".next,public,package.json,package-lock.json"
+          target: "~/nextjs-app"
+
+      - name: SSH and run remote commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ec2-user
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            cd ~/nextjs-app
+            sudo yum update -y
+            curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+            sudo yum install -y nodejs
+            sudo npm install -g pm2
+            npm install --production
+            npx pm2 stop all || true
+            npx pm2 start npm --name "nextjs-app" -- start
